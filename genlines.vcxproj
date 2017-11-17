@@ -22,7 +22,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{883E8AA1-8D8F-4939-B644-42B545C3FDF4}</ProjectGuid>
-    <RootNamespace>генетические</RootNamespace>
+    <RootNamespace>genlines</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -57,14 +57,14 @@
     <IntDir>$(SolutionDir)\obj\</IntDir>
     <TargetName>gen</TargetName>
     <IncludePath>$(SolutionDir)\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)\lib\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)\lib\$(Platform)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)\build\</OutDir>
     <IntDir>$(SolutionDir)\obj\</IntDir>
     <TargetName>gen</TargetName>
     <IncludePath>$(SolutionDir)\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)\lib\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)\lib\$(Platform)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>

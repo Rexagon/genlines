@@ -4,7 +4,7 @@ int main()
 {
 	srand(time(0));
 
-	sf::RenderWindow window(sf::VideoMode(1000, 1000), "Gen");
+	sf::RenderWindow window(sf::VideoMode(1000, 1000), "genlines");
 	window.setView(sf::View(sf::FloatRect(-500, -500, 1000, 1000)));
 
 	// 
