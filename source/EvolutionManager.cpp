@@ -17,6 +17,11 @@ EvolutionManager::EvolutionManager(const sf::Vector2f& origin, const sf::Vector2
 	}
 }
 
+std::vector<Line> EvolutionManager::getCurrentGeneration()
+{
+	return m_currentGeneration;
+}
+
 std::vector<Line> EvolutionManager::nextGeneration()
 {
 	float chance = 0.0f;
@@ -40,11 +45,11 @@ std::vector<Line> EvolutionManager::nextGeneration()
 
 		Line::Genome genome;
 		for (size_t j = 0; j < genome.size(); ++j) {
-			if (randomBoolean(0.005f)) {
-				genome[j] = (firstGenome[j] + randomFloat(-45.0f, 45.0f)) / 3.0f;
+			if (randomBoolean(0.008f)) {
+				genome[j] = (firstGenome[j] + randomFloat(-45.0f, 45.0f)) / 2.0f;
 			}
-			else if (randomBoolean(0.005f)) {
-				genome[j] = (secondGenome[j] + randomFloat(-45.0f, 45.0f)) / 3.0f;
+			else if (randomBoolean(0.008f)) {
+				genome[j] = (secondGenome[j] + randomFloat(-45.0f, 45.0f)) / 2.0f;
 			}
 			else {
 				genome[j] = (firstGenome[j] + secondGenome[j]) / 2.0f;

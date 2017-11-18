@@ -9,6 +9,7 @@ class EvolutionManager
 public:
 	EvolutionManager(const sf::Vector2f& origin, const sf::Vector2f& target, size_t generationSize = 10);
 
+	std::vector<Line> getCurrentGeneration();
 	std::vector<Line> nextGeneration();
 
 	sf::Vector2f getOrigin() const;

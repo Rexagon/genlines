@@ -10,7 +10,7 @@ int main()
 	window.setView(sf::View(sf::FloatRect(-500, -500, 1000, 1000)));
 
 	// 
-	EvolutionManager manager(sf::Vector2f(-250.0f, -250.0f), sf::Vector2f(300, 250.0f));
+	EvolutionManager manager(sf::Vector2f(-250.0f, -250.0f), sf::Vector2f(200.0f, -250.0f));
 
 	// sphere of point
 	sf::CircleShape area;
@@ -21,7 +21,7 @@ int main()
 	area.setPosition(manager.getTarget() - sf::Vector2f(50.0f, 50.0f));
 
 	// gen algorithm
-	std::vector<Line> lines = manager.nextGeneration();
+	std::vector<Line> lines = manager.getCurrentGeneration();
 
 	// open the window
 	while (window.isOpen())
