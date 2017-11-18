@@ -3,7 +3,7 @@
 float getDiff(const sf::Vector2f & a, const sf::Vector2f & b)
 {
 	sf::Vector2f v = a - b;
-	return std::sqrt(v.x * v.x + v.y * v.y);
+	return v.x * v.x + v.y * v.y;
 }
 
 bool randomBoolean(float probability)
