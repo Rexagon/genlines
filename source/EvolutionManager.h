@@ -7,25 +7,17 @@
 class EvolutionManager
 {
 public:
-	EvolutionManager();
-
-	void init();
-
-	sf::Vector2f getTargetPoint() const;
-
-	Line getTargetEntity() const;
+	EvolutionManager(const sf::Vector2f& origin, const sf::Vector2f& target, size_t generationSize = 10);
 
 	std::vector<Line> nextGeneration();
 
+	sf::Vector2f getOrigin() const;
+	sf::Vector2f getTarget() const;
+
 private:
-	Line::Segment generateSegment(const Line::Segment& segment);
-	Line generateLine(const Line& line);
+	sf::Vector2f m_origin;
+	sf::Vector2f m_target;
 
-	float getTargetDiff(const Line& line);
-
-	size_t m_generation;
-
-	Line m_targetEntity;
-	sf::Vector2f m_targetPoint;
-	std::vector<Line> m_currentLines;
+	size_t m_generationSize;
+	std::vector<Line> m_currentGeneration;
 };

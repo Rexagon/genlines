@@ -1,35 +1,31 @@
 #pragma once
 
-#include <vector>
+#include <array>
 
 #include <SFML/Graphics.hpp>
 
-class Line : public sf::Drawable, public sf::Transformable
+class Line : public sf::Drawable
 {
+	static const size_t m_segmentCount = 30;
+	static const float m_segmentLength;
+
 public:
-	struct Segment
-	{
-		Segment(float l, float a) :
-			length(l), angle(a)
-		{}
+	typedef std::array<float, m_segmentCount> Genome;
 
-		float length;
-		float angle;
-	};
-
-	Line(const std::vector<Segment>& segments = {});
+	Line(const sf::Vector2f& origin, const Genome& genome = {});
 
 	sf::Vector2f getHeadPosition() const;
 
-	std::vector<Segment> getParameters() const;
+	Genome getGenome() const;
+
+	size_t getSegmentCount() const;
 
 protected:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 private:
-	static sf::Vertex createVertex(const sf::Vector2f& position);
-
-	std::vector<Segment> m_segments;
 	sf::VertexArray m_vertices;
+
+	Genome m_genome;
 };
 

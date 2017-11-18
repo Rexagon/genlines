@@ -2,22 +2,23 @@
 
 int main()
 {
-	srand(time(0));
+	srand(static_cast<unsigned int>(time(nullptr)));
 
 	sf::RenderWindow window(sf::VideoMode(1000, 1000), "genlines");
+	window.setVerticalSyncEnabled(true);
+
 	window.setView(sf::View(sf::FloatRect(-500, -500, 1000, 1000)));
 
 	// 
-	EvolutionManager manager;
-	manager.init();
+	EvolutionManager manager(sf::Vector2f(-250.0f, -250.0f), sf::Vector2f(300, 250.0f));
 
 	// sphere of point
 	sf::CircleShape area;
 	area.setOutlineThickness(1.0f);
 	area.setOutlineColor(sf::Color::Red);
 	area.setFillColor(sf::Color::Black);
-	area.setRadius(150);
-	area.setPosition(manager.getTargetPoint() - sf::Vector2f(150.0f, 150.0f));
+	area.setRadius(50.0f);
+	area.setPosition(manager.getTarget() - sf::Vector2f(50.0f, 50.0f));
 
 	// gen algorithm
 	std::vector<Line> lines = manager.nextGeneration();
@@ -34,7 +35,6 @@ int main()
 			else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space) {
 				lines = manager.nextGeneration();
 			}
-
 		}
 
 		window.clear();
@@ -46,8 +46,6 @@ int main()
 		for (Line& line : lines) {
 			window.draw(line);
 		}
-
-		window.draw(manager.getTargetEntity());
 
 		window.display();
 	}

@@ -2,97 +2,68 @@
 
 #include <iostream>
 
-EvolutionManager::EvolutionManager() :
-	m_targetPoint(450.0f, 300.0f)
-{
-}
+#include "Stuff.h"
 
-void EvolutionManager::init()
+EvolutionManager::EvolutionManager(const sf::Vector2f& origin, const sf::Vector2f& target, size_t generationSize) :
+	m_origin(origin), m_target(target), m_generationSize(generationSize)
 {
-	size_t segmentCount = 1;
+	for (size_t i = 0; i < m_generationSize; ++i) {
+		Line::Genome genome;
+		for (size_t j = 0; j < genome.size(); ++j) {
+			genome[j] = randomFloat(-90.0f, 90.0f);
+		}
 
-	std::vector<Line::Segment> segments;
-	for (size_t i = 0; i < segmentCount; ++i) {
-		segments.push_back(generateSegment(Line::Segment(50, 0)));
+		m_currentGeneration.emplace_back(m_origin, genome);
 	}
-	m_targetEntity = Line(segments);
-	m_currentLines.push_back(m_targetEntity);
-}
-
-sf::Vector2f EvolutionManager::getTargetPoint() const
-{
-	return m_targetPoint;
-}
-
-Line EvolutionManager::getTargetEntity() const
-{
-	return m_targetEntity;
 }
 
 std::vector<Line> EvolutionManager::nextGeneration()
 {
-	if (m_currentLines.empty()) {
-		return {};
+	float chance = 0.0f;
+	std::vector<float> survivalRates(m_generationSize);
+
+	for (size_t i = 0; i < m_generationSize; ++i) {
+		survivalRates[i] = 1.0f / getDiff(m_currentGeneration[i].getHeadPosition(), m_target);
+		chance += survivalRates[i];
 	}
 
-	std::pair<size_t, float> min = std::make_pair(0, getTargetDiff(m_currentLines[0]));
-	for (size_t i = 1; i < m_currentLines.size(); ++i) {
-		//std::cout << m_currentLines[i] << ' ' << diff << std::endl;
-		float diff = getTargetDiff(m_currentLines[i]);
-		std::cout << i << ' ' << diff << std::endl;
-		if (min.second < diff) {
-			min = std::make_pair(i, diff);
+	float total = 0.0f;
+	for (size_t i = 0; i < m_generationSize; ++i) {
+		survivalRates[i] = total = total + survivalRates[i] / chance;
+	}
+
+	std::vector<Line> newGeneration;
+	for (size_t i = 0; i < m_generationSize; ++i) {
+		std::pair<size_t, size_t> parents = randomPair(survivalRates);
+		Line::Genome firstGenome = m_currentGeneration[parents.first].getGenome();
+		Line::Genome secondGenome = m_currentGeneration[parents.second].getGenome();
+
+		Line::Genome genome;
+		for (size_t j = 0; j < genome.size(); ++j) {
+			if (randomBoolean(0.005f)) {
+				genome[j] = (firstGenome[j] + randomFloat(-45.0f, 45.0f)) / 3.0f;
+			}
+			else if (randomBoolean(0.005f)) {
+				genome[j] = (secondGenome[j] + randomFloat(-45.0f, 45.0f)) / 3.0f;
+			}
+			else {
+				genome[j] = (firstGenome[j] + secondGenome[j]) / 2.0f;
+			}
 		}
+		newGeneration.emplace_back(m_origin, genome);
 	}
 
-	m_targetEntity = m_currentLines[min.first];
-	std::cout << "Current diff = " << getTargetDiff(m_targetEntity) << std::endl;
 
-	sf::Vector2f v = m_targetPoint - m_targetEntity.getHeadPosition();
-	std::cout << std::sqrt(v.x * v.x + v.y * v.y) << "\n\n";
-	if (std::sqrt(v.x * v.x + v.y * v.y) < 150.0f) {
-		return {};
-	}
-
-	m_currentLines.clear();
-	for (size_t i = 0; i < 10; ++i) {
-		m_currentLines.push_back(generateLine(m_targetEntity));
-	}
-
-	return m_currentLines;
+	m_currentGeneration = newGeneration;
+	return m_currentGeneration;
 }
 
-Line::Segment EvolutionManager::generateSegment(const Line::Segment& segment)
+sf::Vector2f EvolutionManager::getOrigin() const
 {
-	Line::Segment result(segment);
-
-	result.angle += -45 + rand() % 91;
-	result.length += -25 + rand() % 51;
-
-	return result;
+	return m_origin;
 }
 
-Line EvolutionManager::generateLine(const Line & line)
+sf::Vector2f EvolutionManager::getTarget() const
 {
-	const std::vector<Line::Segment>& segments = line.getParameters();
-
-	std::vector<Line::Segment> newSegments;
-
-	size_t nextSegmentsCount = segments.size() + rand() % 2 - 1;
-	for (size_t i = 0; i < segments.size() && i < nextSegmentsCount; ++i) {
-		Line::Segment segment = generateSegment(segments[i]);
-		newSegments.push_back(segment);
-	}
-
-	for (size_t i = newSegments.size() - 1; i < nextSegmentsCount; ++i) {
-		newSegments.push_back(generateSegment(Line::Segment(50, 0)));
-	}
-
-	return Line(newSegments);
-}
-
-float EvolutionManager::getTargetDiff(const Line & line)
-{
-	sf::Vector2f v = m_targetPoint + line.getHeadPosition();
-	return std::sqrt(v.x * v.x + v.y * v.y);
+	return m_target;
 }
